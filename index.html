@@ -364,38 +364,38 @@
 
   // ── Popup builders ────────────────────────────────────────────────────────
   function streamPopup(p) {
-    const name  = p.WATER_NAME || p.WaterName || p.water_name || p.NAME || 'Unnamed Water';
-    const county = p.COUNTY || p.County || p.county || '';
-    const section = p.SECTION_NAME || p.SectionName || p.section_name || '';
-    const gisKey = p.GIS_Key || p.GIS_KEY || '';
-    return `
-      <div class="popup-title">${name}</div>
-      ${county  ? `<div class="popup-row"><span class="popup-label">County</span><span class="popup-val">${county}</span></div>` : ''}
-      ${section ? `<div class="popup-row"><span class="popup-label">Section</span><span class="popup-val">${section}</span></div>` : ''}
-      ${gisKey  ? `<div class="popup-row"><span class="popup-label">GIS Key</span><span class="popup-val">${gisKey}</span></div>` : ''}
-      <div><span class="popup-badge badge-stream">STOCKED STREAM</span></div>`;
-  }
+  const name   = p.GNIS_Name || p.GNIS_NAME || p.WtrName || p.WaterName || 'Unnamed Water';
+  const county = p.County || p.COUNTY || '';
+  const section = p.SecUpper_1 && p.SecLower_1 ? `${p.SecUpper_1} to ${p.SecLower_1}` : '';
+  const gisKey = p.GIS_Key || p.GIS_KEY || '';
+  return `
+    <div class="popup-title">${name}</div>
+    ${county  ? `<div class="popup-row"><span class="popup-label">County</span><span class="popup-val">${county}</span></div>` : ''}
+    ${section ? `<div class="popup-row"><span class="popup-label">Section</span><span class="popup-val">${section}</span></div>` : ''}
+    ${gisKey  ? `<div class="popup-row"><span class="popup-label">GIS Key</span><span class="popup-val">${gisKey}</span></div>` : ''}
+    <div><span class="popup-badge badge-stream">STOCKED STREAM</span></div>`;
+}
 
-  function lakePopup(p) {
-    const name   = p.WATER_NAME || p.WaterName || p.water_name || p.NAME || p.LAKE_NAME || 'Unnamed Lake';
-    const county = p.COUNTY || p.County || p.county || '';
-    const acres  = p.ACRES || p.acres || '';
-    return `
-      <div class="popup-title">${name}</div>
-      ${county ? `<div class="popup-row"><span class="popup-label">County</span><span class="popup-val">${county}</span></div>` : ''}
-      ${acres  ? `<div class="popup-row"><span class="popup-label">Acres</span><span class="popup-val">${acres}</span></div>` : ''}
-      <div><span class="popup-badge badge-lake">STOCKED LAKE</span></div>`;
-  }
+function lakePopup(p) {
+  const name   = p.WtrName || p.GNIS_NAME || p.GNIS_Name || 'Unnamed Lake';
+  const county = p.County || p.COUNTY || '';
+  const acres  = p.AreaAcres ? `${p.AreaAcres} ac` : '';
+  return `
+    <div class="popup-title">${name}</div>
+    ${county ? `<div class="popup-row"><span class="popup-label">County</span><span class="popup-val">${county}</span></div>` : ''}
+    ${acres  ? `<div class="popup-row"><span class="popup-label">Size</span><span class="popup-val">${acres}</span></div>` : ''}
+    <div><span class="popup-badge badge-lake">STOCKED LAKE</span></div>`;
+}
 
-  function keystonePopup(p, type) {
-    const name   = p.WaterName || p.WATER_NAME || p.water_name || p.NAME || 'Unnamed';
-    const county = p.County || p.COUNTY || p.county || '';
-    return `
-      <div class="popup-title">${name}</div>
-      ${county ? `<div class="popup-row"><span class="popup-label">County</span><span class="popup-val">${county}</span></div>` : ''}
-      <div class="popup-row"><span class="popup-label">Program</span><span class="popup-val">Best Fishing Water</span></div>
-      <div><span class="popup-badge badge-keystone">⭐ BEST FISHING ${type.toUpperCase()}</span></div>`;
-  }
+function keystonePopup(p, type) {
+  const name   = p.WtrName || p.GNIS_NAME || p.GNIS_Name || 'Unnamed';
+  const county = p.County || p.COUNTY || '';
+  return `
+    <div class="popup-title">${name}</div>
+    ${county ? `<div class="popup-row"><span class="popup-label">County</span><span class="popup-val">${county}</span></div>` : ''}
+    <div class="popup-row"><span class="popup-label">Program</span><span class="popup-val">Best Fishing Water</span></div>
+    <div><span class="popup-badge badge-keystone">⭐ BEST FISHING ${type.toUpperCase()}</span></div>`;
+}
 
   // ── County filter names ───────────────────────────────────────────────────
   const SE_COUNTIES = ['BUCKS','MONTGOMERY','CHESTER','DELAWARE','PHILADELPHIA'];
@@ -521,7 +521,7 @@
   // ── Main data fetch ───────────────────────────────────────────────────────
   // PASDA (Penn State) mirror of PFBC data — reliably CORS-accessible
   const BASE         = 'https://mapservices.pasda.psu.edu/server/rest/services/pasda/PAFishBoat/MapServer';
-  const STREAMS_URL  = `${BASE}/26`;  // Trout Stocked Sections 2024
+  const STREAMS_URL  = `${BASE}/3`;  // Trout Stocked Sections 202603
   const LAKES_PT_URL = `${BASE}/1`;   // Stocked Trout Waterbodies (points) 202411
   const LAKES_PL_URL = `${BASE}/2`;   // Stocked Trout Waterbodies (polygons) 202403
 
