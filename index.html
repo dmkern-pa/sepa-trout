@@ -5,26 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SE PA Stocked Trout Waters</title>
 
-  <!-- Leaflet -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Roboto:wght@400;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet" />
 
   <style>
     :root {
-      --bg:       #0e1a1f;
-      --panel:    #132029;
-      --border:   #1e3340;
-      --gold:     #c9a84c;
-      --blue:     #4ab3d4;
-      --teal:     #2ec4a4;
-      --red:      #e05c5c;
-      --text:     #dce8ed;
-      --muted:    #7a9baa;
+      --bg:      #0e1a1f;
+      --panel:   #132029;
+      --border:  #1e3340;
+      --gold:    #c9a84c;
+      --blue:    #4ab3d4;
+      --teal:    #2ec4a4;
+      --green:   #7ed957;
+      --red:     #e05c5c;
+      --text:    #dce8ed;
+      --muted:   #7a9baa;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
@@ -34,228 +31,147 @@
       height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
     }
 
     header {
       background: var(--panel);
       border-bottom: 1px solid var(--border);
-      padding: 14px 24px;
-      display: flex;
-      align-items: center;
-      gap: 18px;
+      padding: 10px 16px;
+      display: flex; align-items: center; gap: 12px;
       flex-shrink: 0;
     }
-
-    header .fish-icon {
-      font-size: 26px;
-      filter: drop-shadow(0 0 6px var(--teal));
+    header .fish-icon { font-size: 22px; filter: drop-shadow(0 0 6px var(--teal)); }
+    header h1 { font-family: 'Roboto', sans-serif; font-size: 1.8rem; color: #e8edf0; letter-spacing: 0.03em; }
+    header p  { font-size: 0.72rem; color: var(--muted); margin-top: 1px; }
+    .header-actions { margin-left: auto; display: flex; gap: 8px; }
+    .icon-btn {
+      background: transparent; border: 1px solid var(--border);
+      color: var(--muted); border-radius: 6px; padding: 5px 10px;
+      cursor: pointer; font-size: 0.78rem; font-family: 'Source Sans 3', sans-serif;
+      display: flex; align-items: center; gap: 5px;
+      transition: all 0.2s; white-space: nowrap;
     }
-
-    header h1 {
-      font-family: 'Roboto', sans-serif;
-      font-size: 1.8rem;
-      color: var(--text);
-      letter-spacing: 0.03em;
-    }
-
-    header p {
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-top: 2px;
-    }
+    .icon-btn:hover { border-color: var(--teal); color: var(--teal); }
 
     .controls {
-      background: var(--panel);
-      border-bottom: 1px solid var(--border);
-      padding: 10px 24px;
-      display: flex;
-      align-items: center;
-      gap: 24px;
-      flex-wrap: wrap;
-      flex-shrink: 0;
+      background: var(--panel); border-bottom: 1px solid var(--border);
+      padding: 8px 16px; display: flex; align-items: center;
+      gap: 8px; flex-wrap: wrap; flex-shrink: 0;
     }
-
-    .toggle-group {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
     .toggle-btn {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      padding: 5px 14px;
-      border-radius: 20px;
-      border: 1.5px solid;
-      cursor: pointer;
-      font-size: 0.82rem;
-      font-family: 'Source Sans 3', sans-serif;
-      font-weight: 600;
-      transition: all 0.2s;
-      background: transparent;
-      letter-spacing: 0.02em;
+      display: flex; align-items: center; gap: 6px;
+      padding: 4px 12px; border-radius: 20px; border: 1.5px solid;
+      cursor: pointer; font-size: 0.78rem; font-family: 'Source Sans 3', sans-serif;
+      font-weight: 600; transition: all 0.2s; background: transparent;
+      letter-spacing: 0.02em; white-space: nowrap;
     }
+    .toggle-btn.streams  { border-color: var(--blue);  color: var(--blue); }
+    .toggle-btn.streams.active  { background: var(--blue);  color: #0e1a1f; }
+    .toggle-btn.lakes    { border-color: var(--teal);  color: var(--teal); }
+    .toggle-btn.lakes.active    { background: var(--teal);  color: #0e1a1f; }
+    .toggle-btn.keystone { border-color: var(--gold);  color: var(--gold); }
+    .toggle-btn.keystone.active { background: var(--gold);  color: #0e1a1f; }
+    .toggle-btn.wild     { border-color: var(--green); color: var(--green); }
+    .toggle-btn.wild.active     { background: var(--green); color: #0e1a1f; }
 
-    .toggle-btn.streams {
-      border-color: var(--blue);
-      color: var(--blue);
-    }
-    .toggle-btn.streams.active {
-      background: var(--blue);
-      color: #0e1a1f;
-    }
-
-    .toggle-btn.lakes {
-      border-color: var(--teal);
-      color: var(--teal);
-    }
-    .toggle-btn.lakes.active {
-      background: var(--teal);
-      color: #0e1a1f;
-    }
-
-    .toggle-btn.keystone {
-      border-color: var(--gold);
-      color: var(--gold);
-    }
-    .toggle-btn.keystone.active {
-      background: var(--gold);
-      color: #0e1a1f;
-    }
-
-    .dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
     .dot.blue  { background: var(--blue); }
     .dot.teal  { background: var(--teal); }
     .dot.gold  { background: var(--gold); }
+    .dot.green { background: var(--green); }
 
-    .county-filter {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-left: auto;
-    }
-
-    .county-filter label {
-      font-size: 0.78rem;
-      color: var(--muted);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-
+    .county-filter { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+    .county-filter label { font-size: 0.72rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
     .county-filter select {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-family: 'Source Sans 3', sans-serif;
-      font-size: 0.82rem;
-      cursor: pointer;
+      background: var(--bg); border: 1px solid var(--border); color: var(--text);
+      padding: 4px 8px; border-radius: 6px; font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.78rem; cursor: pointer;
     }
 
     #status-bar {
-      background: var(--panel);
-      border-bottom: 1px solid var(--border);
-      padding: 6px 24px;
-      font-size: 0.76rem;
-      color: var(--muted);
-      display: flex;
-      gap: 24px;
-      flex-shrink: 0;
+      background: var(--panel); border-bottom: 1px solid var(--border);
+      padding: 4px 16px; font-size: 0.72rem; color: var(--muted);
+      display: flex; gap: 16px; flex-shrink: 0; flex-wrap: wrap;
     }
-
     #status-bar span { color: var(--text); font-weight: 600; }
 
-    #map {
-      flex: 1;
+    #error-banner {
+      display: none; background: rgba(224,92,92,0.12);
+      border-bottom: 1px solid var(--red); color: var(--red);
+      padding: 6px 16px; font-size: 0.78rem; flex-shrink: 0;
     }
 
-    /* Leaflet popup styling */
+    #map { flex: 1; }
+
     .leaflet-popup-content-wrapper {
-      background: var(--panel) !important;
-      border: 1px solid var(--border) !important;
-      border-radius: 8px !important;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.5) !important;
+      background: var(--panel) !important; border: 1px solid var(--border) !important;
+      border-radius: 8px !important; box-shadow: 0 8px 24px rgba(0,0,0,0.5) !important;
     }
     .leaflet-popup-tip { background: var(--panel) !important; }
     .leaflet-popup-content {
-      color: var(--text) !important;
-      font-family: 'Source Sans 3', sans-serif !important;
-      font-size: 0.85rem !important;
-      margin: 12px 16px !important;
-      min-width: 180px;
+      color: var(--text) !important; font-family: 'Source Sans 3', sans-serif !important;
+      font-size: 0.83rem !important; margin: 12px 14px !important; min-width: 200px;
     }
-    .popup-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 1rem;
-      color: var(--gold);
-      margin-bottom: 6px;
-    }
-    .popup-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      margin-top: 3px;
-      font-size: 0.78rem;
-    }
+    .popup-title { font-family: 'Playfair Display', serif; font-size: 0.98rem; color: var(--gold); margin-bottom: 6px; line-height: 1.3; }
+    .popup-row { display: flex; justify-content: space-between; gap: 12px; margin-top: 3px; font-size: 0.76rem; }
     .popup-label { color: var(--muted); }
-    .popup-val { font-weight: 600; color: var(--text); }
+    .popup-val { font-weight: 600; color: var(--text); text-align: right; }
     .popup-badge {
-      display: inline-block;
-      margin-top: 7px;
-      padding: 2px 9px;
-      border-radius: 10px;
-      font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
+      display: inline-block; margin-top: 7px; padding: 2px 8px;
+      border-radius: 10px; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.04em;
     }
-    .badge-stream  { background: rgba(74,179,212,0.2); color: var(--blue); border: 1px solid var(--blue); }
-    .badge-lake    { background: rgba(46,196,164,0.2); color: var(--teal); border: 1px solid var(--teal); }
-    .badge-keystone{ background: rgba(201,168,76,0.2);  color: var(--gold); border: 1px solid var(--gold); }
+    .badge-stream   { background: rgba(74,179,212,0.15);  color: var(--blue);  border: 1px solid var(--blue); }
+    .badge-lake     { background: rgba(46,196,164,0.15);  color: var(--teal);  border: 1px solid var(--teal); }
+    .badge-keystone { background: rgba(201,168,76,0.15);  color: var(--gold);  border: 1px solid var(--gold); }
+    .badge-wild     { background: rgba(126,217,87,0.15);  color: var(--green); border: 1px solid var(--green); }
+    .popup-link {
+      display: block; margin-top: 8px; color: var(--teal); font-size: 0.75rem;
+      text-decoration: none; border-top: 1px solid var(--border); padding-top: 6px;
+    }
+    .popup-link:hover { color: var(--blue); }
 
     .loading-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(14,26,31,0.92);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      gap: 16px;
+      position: fixed; inset: 0; background: rgba(14,26,31,0.93);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      z-index: 9999; gap: 14px;
     }
     .spinner {
-      width: 44px; height: 44px;
-      border: 3px solid var(--border);
-      border-top-color: var(--teal);
-      border-radius: 50%;
+      width: 42px; height: 42px; border: 3px solid var(--border);
+      border-top-color: var(--teal); border-radius: 50%;
       animation: spin 0.9s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .loading-text {
-      font-family: 'Playfair Display', serif;
-      color: var(--gold);
-      font-size: 1rem;
+    .loading-text { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 1rem; }
+    .loading-sub  { color: var(--muted); font-size: 0.78rem; }
+
+    #toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: var(--teal); color: #0e1a1f; padding: 8px 20px;
+      border-radius: 20px; font-weight: 600; font-size: 0.82rem;
+      z-index: 9998; opacity: 0; transition: opacity 0.3s; pointer-events: none;
     }
-    .loading-sub {
-      color: var(--muted);
-      font-size: 0.8rem;
+    #toast.show { opacity: 1; }
+
+    .locate-pulse {
+      width: 16px; height: 16px; border-radius: 50%;
+      background: var(--teal); border: 2px solid white;
+      animation: pulse 1.8s ease-out infinite;
+    }
+    @keyframes pulse {
+      0%   { box-shadow: 0 0 0 0 rgba(46,196,164,0.6); }
+      70%  { box-shadow: 0 0 0 10px rgba(46,196,164,0); }
+      100% { box-shadow: 0 0 0 0 rgba(46,196,164,0); }
     }
 
-    #error-banner {
-      display: none;
-      background: rgba(224,92,92,0.15);
-      border: 1px solid var(--red);
-      color: var(--red);
-      padding: 8px 24px;
-      font-size: 0.8rem;
-      flex-shrink: 0;
+    @media (max-width: 600px) {
+      header h1  { font-size: 1.2rem; }
+      header p   { display: none; }
+      .icon-btn .btn-label { display: none; }
+      .controls  { gap: 5px; padding: 6px 10px; }
+      .toggle-btn { padding: 3px 8px; font-size: 0.7rem; }
+      .county-filter label { display: none; }
+      #status-bar { gap: 10px; font-size: 0.68rem; }
     }
   </style>
 </head>
@@ -264,39 +180,51 @@
 <div class="loading-overlay" id="loading">
   <div class="spinner"></div>
   <div class="loading-text">Loading Trout Waters…</div>
-  <div class="loading-sub" id="loading-sub">Fetching streams from PFBC…</div>
+  <div class="loading-sub" id="loading-sub">Connecting to PFBC data…</div>
 </div>
+
+<div id="toast">🔗 Link copied!</div>
 
 <header>
   <div class="fish-icon">🎣</div>
   <div>
     <h1>SE Pennsylvania Stocked Trout Waters</h1>
-    <p>Bucks · Montgomery · Chester · Delaware · Philadelphia — 2024 PFBC Data</p>
+    <p>Bucks · Montgomery · Chester · Delaware · Philadelphia — PFBC Data</p>
+  </div>
+  <div class="header-actions">
+    <button class="icon-btn" id="btn-locate" onclick="locateMe()">
+      📍 <span class="btn-label">Near Me</span>
+    </button>
+    <button class="icon-btn" onclick="shareSpot()">
+      🔗 <span class="btn-label">Share</span>
+    </button>
   </div>
 </header>
 
 <div class="controls">
-  <div class="toggle-group">
-    <button class="toggle-btn streams active" id="btn-streams" onclick="toggleLayer('streams')">
+  <div style="display:flex;gap:6px;flex-wrap:wrap;">
+    <button class="toggle-btn streams active"  id="btn-streams"  onclick="toggleLayer('streams')">
       <span class="dot blue"></span> Stocked Streams
     </button>
-    <button class="toggle-btn lakes active" id="btn-lakes" onclick="toggleLayer('lakes')">
+    <button class="toggle-btn lakes active"    id="btn-lakes"    onclick="toggleLayer('lakes')">
       <span class="dot teal"></span> Stocked Lakes
     </button>
     <button class="toggle-btn keystone active" id="btn-keystone" onclick="toggleLayer('keystone')">
-      <span class="dot gold"></span> Best Fishing Waters
+      <span class="dot gold"></span> Best Waters
+    </button>
+    <button class="toggle-btn wild active"     id="btn-wild"     onclick="toggleLayer('wild')">
+      <span class="dot green"></span> Wild Trout
     </button>
   </div>
-
   <div class="county-filter">
     <label>County</label>
     <select id="county-select" onchange="filterCounty()">
       <option value="">All SE PA</option>
-      <option value="BUCKS">Bucks</option>
-      <option value="MONTGOMERY">Montgomery</option>
-      <option value="CHESTER">Chester</option>
-      <option value="DELAWARE">Delaware</option>
-      <option value="PHILADELPHIA">Philadelphia</option>
+      <option value="Bucks">Bucks</option>
+      <option value="Montgomery">Montgomery</option>
+      <option value="Chester">Chester</option>
+      <option value="Delaware">Delaware</option>
+      <option value="Philadelphia">Philadelphia</option>
     </select>
   </div>
 </div>
@@ -305,263 +233,302 @@
   <div>Streams: <span id="ct-streams">—</span></div>
   <div>Lakes: <span id="ct-lakes">—</span></div>
   <div>Best Waters: <span id="ct-keystone">—</span></div>
+  <div>Wild Trout: <span id="ct-wild">—</span></div>
 </div>
 
-<div id="error-banner" id="error-banner"></div>
-
+<div id="error-banner"></div>
 <div id="map"></div>
 
 <script>
-  // ── Map Init ──────────────────────────────────────────────────────────────
+  // ── Restore view from URL hash ────────────────────────────────────────────
+  function getHashView() {
+    try {
+      const h = window.location.hash.slice(1);
+      if (!h) return null;
+      const [z, lat, lng] = h.split('/').map(Number);
+      if ([z, lat, lng].some(isNaN)) return null;
+      return { zoom: z, center: [lat, lng] };
+    } catch { return null; }
+  }
+
+  const savedView = getHashView();
   const map = L.map('map', {
-    center: [40.15, -75.35],
-    zoom: 10,
-    zoomControl: true
+    center: savedView ? savedView.center : [40.15, -75.35],
+    zoom:   savedView ? savedView.zoom   : 10
   });
 
-  // Dark basemap (CartoDB Dark Matter)
+  // Keep URL hash in sync for share-a-spot
+  map.on('moveend', () => {
+    const c = map.getCenter();
+    window.history.replaceState(null, '',
+      `#${map.getZoom()}/${c.lat.toFixed(5)}/${c.lng.toFixed(5)}`);
+  });
+
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-    attribution: '© OpenStreetMap contributors © CARTO | Data: PA Fish & Boat Commission',
-    subdomains: 'abcd',
-    maxZoom: 19
+    attribution: '© OpenStreetMap contributors © CARTO | Data: PA Fish & Boat Commission / PASDA',
+    subdomains: 'abcd', maxZoom: 19
   }).addTo(map);
 
-  // ── SE PA bounding box ────────────────────────────────────────────────────
-  // Covers Bucks, Montgomery, Chester, Delaware, Philadelphia
-  const SE_PA_BBOX = '-75.85,39.72,-74.85,40.45';
+  // ── Config ────────────────────────────────────────────────────────────────
+  const SE_PA_BBOX  = '-75.85,39.72,-74.85,40.45';
+  const SE_COUNTIES = ['bucks','montgomery','chester','delaware','philadelphia'];
+  const BASE = 'https://mapservices.pasda.psu.edu/server/rest/services/pasda/PAFishBoat/MapServer';
 
-  // ── Layer storage ─────────────────────────────────────────────────────────
+  // ── Layer state ───────────────────────────────────────────────────────────
   const layers = {
     streams:  { group: L.layerGroup().addTo(map), data: [], visible: true },
     lakes:    { group: L.layerGroup().addTo(map), data: [], visible: true },
-    keystone: { group: L.layerGroup().addTo(map), data: [], visible: true }
+    keystone: { group: L.layerGroup().addTo(map), data: [], visible: true },
+    wild:     { group: L.layerGroup().addTo(map), data: [], visible: true }
   };
 
-  let allStreamsData = [];
-  let allLakesData   = [];
-  let allKeystoneData = [];
+  let allStreamsData = [], allLakesData = [], allKeystoneData = [], allWildData = [];
 
-  // ── ArcGIS Query Helper ───────────────────────────────────────────────────
-  async function fetchArcGIS(baseUrl, extraParams = {}) {
+  // ── ArcGIS query ──────────────────────────────────────────────────────────
+  async function fetchArcGIS(layerUrl, extra = {}) {
     const params = new URLSearchParams({
-      where: '1=1',
-      geometry: SE_PA_BBOX,
+      where: '1=1', geometry: SE_PA_BBOX,
       geometryType: 'esriGeometryEnvelope',
       spatialRel: 'esriSpatialRelIntersects',
-      inSR: '4269',
-      outFields: '*',
-      f: 'geojson',
-      resultRecordCount: 2000,
-      ...extraParams
+      inSR: '4269', outFields: '*', f: 'geojson',
+      resultRecordCount: 2000, ...extra
     });
-    const url = `${baseUrl}/query?${params}`;
-    const res = await fetch(url);
+    const res = await fetch(`${layerUrl}/query?${params}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json();
     if (json.error) throw new Error(json.error.message || 'ArcGIS error');
     return json;
   }
 
+  // ── County helpers ────────────────────────────────────────────────────────
+  function getCounty(p) {
+    return (p.County || p.COUNTY || p.county || p.COUNTY_NAM || p.SecCnt1Nam || '').toLowerCase().trim();
+  }
+  function isInSEPA(p) { const c = getCounty(p); return !c || SE_COUNTIES.includes(c); }
+  function countyMatch(p, val) { return !val || getCounty(p) === val.toLowerCase(); }
+
+  // ── Stocking schedule URL ─────────────────────────────────────────────────
+  function stockingUrl(p) {
+    const rfp = p.RFP_WaterI;
+    const gis = p.GIS_Key;
+    if (rfp) return `https://fbweb.pa.gov/stocking/TroutStocking_ATW_GIS_RFP.aspx?RFP_WaterID=${rfp}`;
+    if (gis) return `https://fbweb.pa.gov/stocking/StockingSection_GIS_RFP.aspx?GIS_Key=${gis}`;
+    return null;
+  }
+
   // ── Popup builders ────────────────────────────────────────────────────────
   function streamPopup(p) {
-  const name   = p.GNIS_Name || p.GNIS_NAME || p.WtrName || p.WaterName || 'Unnamed Water';
-  const county = p.County || p.COUNTY || '';
-  const section = p.SecUpper_1 && p.SecLower_1 ? `${p.SecUpper_1} to ${p.SecLower_1}` : '';
-  const gisKey = p.GIS_Key || p.GIS_KEY || '';
-  return `
-    <div class="popup-title">${name}</div>
-    ${county  ? `<div class="popup-row"><span class="popup-label">County</span><span class="popup-val">${county}</span></div>` : ''}
-    ${section ? `<div class="popup-row"><span class="popup-label">Section</span><span class="popup-val">${section}</span></div>` : ''}
-    ${gisKey  ? `<div class="popup-row"><span class="popup-label">GIS Key</span><span class="popup-val">${gisKey}</span></div>` : ''}
-    <div><span class="popup-badge badge-stream">STOCKED STREAM</span></div>`;
-}
-
-function lakePopup(p) {
-  const name   = p.WtrName || p.GNIS_NAME || p.GNIS_Name || 'Unnamed Lake';
-  const county = p.County || p.COUNTY || '';
-  const acres  = p.AreaAcres ? `${p.AreaAcres} ac` : '';
-  return `
-    <div class="popup-title">${name}</div>
-    ${county ? `<div class="popup-row"><span class="popup-label">County</span><span class="popup-val">${county}</span></div>` : ''}
-    ${acres  ? `<div class="popup-row"><span class="popup-label">Size</span><span class="popup-val">${acres}</span></div>` : ''}
-    <div><span class="popup-badge badge-lake">STOCKED LAKE</span></div>`;
-}
-
-function keystonePopup(p, type) {
-  const name   = p.WtrName || p.GNIS_NAME || p.GNIS_Name || 'Unnamed';
-  const county = p.County || p.COUNTY || '';
-  return `
-    <div class="popup-title">${name}</div>
-    ${county ? `<div class="popup-row"><span class="popup-label">County</span><span class="popup-val">${county}</span></div>` : ''}
-    <div class="popup-row"><span class="popup-label">Program</span><span class="popup-val">Best Fishing Water</span></div>
-    <div><span class="popup-badge badge-keystone">⭐ BEST FISHING ${type.toUpperCase()}</span></div>`;
-}
-
-  // ── County filter names ───────────────────────────────────────────────────
-  const SE_COUNTIES = ['BUCKS','MONTGOMERY','CHESTER','DELAWARE','PHILADELPHIA'];
-
-  function countyMatch(p, filterVal) {
-    if (!filterVal) return true;
-    const c = (p.COUNTY || p.County || p.county || '').toUpperCase();
-    return c === filterVal.toUpperCase();
+    const name   = p.GNIS_Name || p.GNIS_NAME || p.WtrName || 'Unnamed Stream';
+    const county = p.County || p.COUNTY || '';
+    const section = (p.SecUpper_1 && p.SecLower_1) ? `${p.SecUpper_1} → ${p.SecLower_1}` : '';
+    const len    = p.Length_MI_ ? `${(+p.Length_MI_).toFixed(1)} mi` : '';
+    const url    = stockingUrl(p);
+    return `
+      <div class="popup-title">${name}</div>
+      ${county  ? `<div class="popup-row"><span class="popup-label">County</span><span class="popup-val">${county}</span></div>` : ''}
+      ${section ? `<div class="popup-row"><span class="popup-label">Section</span><span class="popup-val">${section}</span></div>` : ''}
+      ${len     ? `<div class="popup-row"><span class="popup-label">Length</span><span class="popup-val">${len}</span></div>` : ''}
+      <span class="popup-badge badge-stream">STOCKED STREAM</span>
+      ${url ? `<a class="popup-link" href="${url}" target="_blank">📅 View stocking schedule →</a>` : ''}`;
   }
 
-  function isInSEPA(p) {
-    const c = (p.COUNTY || p.County || p.county || '').toUpperCase();
-    // If county field present, use it; otherwise fall through (bbox already limits)
-    if (c) return SE_COUNTIES.includes(c);
-    return true;
+  function lakePopup(p) {
+    const name   = p.WtrName || p.GNIS_NAME || p.GNIS_Name || 'Unnamed Lake';
+    const county = p.County || p.COUNTY || '';
+    const acres  = p.AreaAcres ? `${(+p.AreaAcres).toFixed(1)} ac` : '';
+    const url    = stockingUrl(p);
+    return `
+      <div class="popup-title">${name}</div>
+      ${county ? `<div class="popup-row"><span class="popup-label">County</span><span class="popup-val">${county}</span></div>` : ''}
+      ${acres  ? `<div class="popup-row"><span class="popup-label">Size</span><span class="popup-val">${acres}</span></div>` : ''}
+      <span class="popup-badge badge-lake">STOCKED LAKE</span>
+      ${url ? `<a class="popup-link" href="${url}" target="_blank">📅 View stocking schedule →</a>` : ''}`;
   }
 
-  // ── Render layers ─────────────────────────────────────────────────────────
-  function renderStreams(filterVal = '') {
+  function keystonePopup(p, type) {
+    const name   = p.WtrName || p.GNIS_NAME || p.GNIS_Name || 'Unnamed';
+    const county = p.County || p.COUNTY || '';
+    const url    = stockingUrl(p);
+    return `
+      <div class="popup-title">${name}</div>
+      ${county ? `<div class="popup-row"><span class="popup-label">County</span><span class="popup-val">${county}</span></div>` : ''}
+      <div class="popup-row"><span class="popup-label">Program</span><span class="popup-val">Best Fishing Water</span></div>
+      <span class="popup-badge badge-keystone">⭐ BEST FISHING ${type.toUpperCase()}</span>
+      ${url ? `<a class="popup-link" href="${url}" target="_blank">📅 View stocking schedule →</a>` : ''}`;
+  }
+
+  function wildPopup(p) {
+    const name   = p.WtrName || p.GNIS_Name || p.GNIS_NAME || 'Unnamed Stream';
+    const county = p.COUNTY_NAM || p.SecCnt1Nam || p.County || p.COUNTY || '';
+    const desig  = p.Wildtrouts || p.TroutBioma || '';
+    const len    = (p.Length_MI_ || p.Length_Mi1) ? `${(+(p.Length_MI_ || p.Length_Mi1)).toFixed(1)} mi` : '';
+    return `
+      <div class="popup-title">${name}</div>
+      ${county ? `<div class="popup-row"><span class="popup-label">County</span><span class="popup-val">${county}</span></div>` : ''}
+      ${desig  ? `<div class="popup-row"><span class="popup-label">Type</span><span class="popup-val">${desig}</span></div>` : ''}
+      ${len    ? `<div class="popup-row"><span class="popup-label">Length</span><span class="popup-val">${len}</span></div>` : ''}
+      <span class="popup-badge badge-wild">🐟 WILD TROUT STREAM</span>`;
+  }
+
+  // ── Render functions ──────────────────────────────────────────────────────
+  function renderStreams(filt = '') {
     layers.streams.group.clearLayers();
-    let count = 0;
+    let n = 0;
     allStreamsData.forEach(f => {
-      if (!isInSEPA(f.properties)) return;
-      if (!countyMatch(f.properties, filterVal)) return;
-      count++;
-      const line = L.geoJSON(f, {
-        style: {
-          color: '#4ab3d4',
-          weight: 2.5,
-          opacity: 0.85,
-          dashArray: null
-        }
-      }).bindPopup(streamPopup(f.properties), { maxWidth: 260 });
-      layers.streams.group.addLayer(line);
+      if (!isInSEPA(f.properties) || !countyMatch(f.properties, filt)) return;
+      n++;
+      L.geoJSON(f, { style: { color: '#4ab3d4', weight: 2.5, opacity: 0.85 } })
+        .bindPopup(streamPopup(f.properties), { maxWidth: 290 })
+        .addTo(layers.streams.group);
     });
-    document.getElementById('ct-streams').textContent = count;
+    document.getElementById('ct-streams').textContent = n;
   }
 
-  function renderLakes(filterVal = '') {
+  function renderLakes(filt = '') {
     layers.lakes.group.clearLayers();
-    let count = 0;
+    let n = 0;
     allLakesData.forEach(f => {
-      if (!isInSEPA(f.properties)) return;
-      if (!countyMatch(f.properties, filterVal)) return;
-      count++;
-      const geomType = f.geometry?.type || '';
-      if (geomType === 'Point' || geomType === 'MultiPoint') {
-        const coords = geomType === 'Point' ? f.geometry.coordinates : f.geometry.coordinates[0];
-        const marker = L.circleMarker([coords[1], coords[0]], {
-          radius: 7,
-          fillColor: '#2ec4a4',
-          color: '#1a8a76',
-          weight: 1.5,
-          fillOpacity: 0.85
-        }).bindPopup(lakePopup(f.properties), { maxWidth: 260 });
-        layers.lakes.group.addLayer(marker);
+      if (!isInSEPA(f.properties) || !countyMatch(f.properties, filt)) return;
+      n++;
+      const gt = f.geometry?.type || '';
+      const pop = lakePopup(f.properties);
+      if (gt === 'Point' || gt === 'MultiPoint') {
+        const c = gt === 'Point' ? f.geometry.coordinates : f.geometry.coordinates[0];
+        L.circleMarker([c[1], c[0]], { radius: 7, fillColor: '#2ec4a4', color: '#1a8a76', weight: 1.5, fillOpacity: 0.85 })
+          .bindPopup(pop, { maxWidth: 290 }).addTo(layers.lakes.group);
       } else {
-        const poly = L.geoJSON(f, {
-          style: { fillColor: '#2ec4a4', color: '#1a8a76', weight: 1.5, fillOpacity: 0.5 }
-        }).bindPopup(lakePopup(f.properties), { maxWidth: 260 });
-        layers.lakes.group.addLayer(poly);
+        L.geoJSON(f, { style: { fillColor: '#2ec4a4', color: '#1a8a76', weight: 1.5, fillOpacity: 0.5 } })
+          .bindPopup(pop, { maxWidth: 290 }).addTo(layers.lakes.group);
       }
     });
-    document.getElementById('ct-lakes').textContent = count;
+    document.getElementById('ct-lakes').textContent = n;
   }
 
-  function renderKeystone(filterVal = '') {
+  function renderKeystone(filt = '') {
     layers.keystone.group.clearLayers();
-    let count = 0;
+    let n = 0;
     allKeystoneData.forEach(({ feature: f, type }) => {
-      if (!countyMatch(f.properties, filterVal)) return;
-      count++;
-      const geomType = f.geometry?.type || '';
-      if (geomType === 'Point' || geomType === 'MultiPoint') {
-        const coords = geomType === 'Point' ? f.geometry.coordinates : f.geometry.coordinates[0];
-        const marker = L.circleMarker([coords[1], coords[0]], {
-          radius: 9,
-          fillColor: '#c9a84c',
-          color: '#8a6e28',
-          weight: 1.5,
-          fillOpacity: 0.9
-        }).bindPopup(keystonePopup(f.properties, type), { maxWidth: 260 });
-        layers.keystone.group.addLayer(marker);
+      if (!isInSEPA(f.properties) || !countyMatch(f.properties, filt)) return;
+      n++;
+      const gt = f.geometry?.type || '';
+      const pop = keystonePopup(f.properties, type);
+      if (gt === 'Point' || gt === 'MultiPoint') {
+        const c = gt === 'Point' ? f.geometry.coordinates : f.geometry.coordinates[0];
+        L.circleMarker([c[1], c[0]], { radius: 9, fillColor: '#c9a84c', color: '#8a6e28', weight: 1.5, fillOpacity: 0.9 })
+          .bindPopup(pop, { maxWidth: 290 }).addTo(layers.keystone.group);
       } else {
-        const line = L.geoJSON(f, {
-          style: { color: '#c9a84c', weight: 3, opacity: 0.9 }
-        }).bindPopup(keystonePopup(f.properties, type), { maxWidth: 260 });
-        layers.keystone.group.addLayer(line);
+        L.geoJSON(f, { style: { color: '#c9a84c', weight: 3.5, opacity: 0.9 } })
+          .bindPopup(pop, { maxWidth: 290 }).addTo(layers.keystone.group);
       }
     });
-    document.getElementById('ct-keystone').textContent = count;
+    document.getElementById('ct-keystone').textContent = n;
   }
 
-  // ── Toggle layer visibility ───────────────────────────────────────────────
+  function renderWild(filt = '') {
+    layers.wild.group.clearLayers();
+    let n = 0;
+    allWildData.forEach(f => {
+      if (!isInSEPA(f.properties) || !countyMatch(f.properties, filt)) return;
+      n++;
+      L.geoJSON(f, { style: { color: '#7ed957', weight: 2, opacity: 0.7, dashArray: '6 4' } })
+        .bindPopup(wildPopup(f.properties), { maxWidth: 290 })
+        .addTo(layers.wild.group);
+    });
+    document.getElementById('ct-wild').textContent = n;
+  }
+
+  // ── Layer toggle ──────────────────────────────────────────────────────────
   function toggleLayer(key) {
-    const L_ = layers[key];
-    L_.visible = !L_.visible;
+    const lyr = layers[key];
+    lyr.visible = !lyr.visible;
     const btn = document.getElementById('btn-' + key);
-    if (L_.visible) {
-      map.addLayer(L_.group);
-      btn.classList.add('active');
-    } else {
-      map.removeLayer(L_.group);
-      btn.classList.remove('active');
-    }
+    if (lyr.visible) { map.addLayer(lyr.group); btn.classList.add('active'); }
+    else             { map.removeLayer(lyr.group); btn.classList.remove('active'); }
   }
 
   // ── County filter ─────────────────────────────────────────────────────────
   function filterCounty() {
-    const val = document.getElementById('county-select').value;
-    renderStreams(val);
-    renderLakes(val);
-    renderKeystone(val);
+    const v = document.getElementById('county-select').value;
+    renderStreams(v); renderLakes(v); renderKeystone(v); renderWild(v);
   }
 
-  // ── Show error ────────────────────────────────────────────────────────────
+  // ── Near Me ───────────────────────────────────────────────────────────────
+  let locateMarker = null;
+  function locateMe() {
+    if (!navigator.geolocation) return alert('Geolocation not supported by your browser.');
+    const btn = document.getElementById('btn-locate');
+    btn.innerHTML = '⏳ <span class="btn-label">Locating…</span>';
+    navigator.geolocation.getCurrentPosition(
+      ({ coords: { latitude: lat, longitude: lng } }) => {
+        if (locateMarker) map.removeLayer(locateMarker);
+        const icon = L.divIcon({ className: '', html: '<div class="locate-pulse"></div>', iconSize: [16,16], iconAnchor: [8,8] });
+        locateMarker = L.marker([lat, lng], { icon }).addTo(map)
+          .bindPopup('<div style="color:var(--teal);font-weight:600;font-family:\'Source Sans 3\',sans-serif;">📍 You are here</div>')
+          .openPopup();
+        map.setView([lat, lng], 13);
+        btn.innerHTML = '📍 <span class="btn-label">Near Me</span>';
+      },
+      () => {
+        btn.innerHTML = '📍 <span class="btn-label">Near Me</span>';
+        alert('Could not get your location. Please allow location access and try again.');
+      },
+      { timeout: 10000 }
+    );
+  }
+
+  // ── Share a spot ──────────────────────────────────────────────────────────
+  function shareSpot() {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+      const t = document.getElementById('toast');
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
+    }).catch(() => prompt('Copy this link:', url));
+  }
+
+  // ── Error banner ──────────────────────────────────────────────────────────
   function showError(msg) {
     const el = document.getElementById('error-banner');
-    el.textContent = msg;
-    el.style.display = 'block';
+    el.textContent = msg; el.style.display = 'block';
   }
 
-  // ── Main data fetch ───────────────────────────────────────────────────────
-  // PASDA (Penn State) mirror of PFBC data — reliably CORS-accessible
-  const BASE         = 'https://mapservices.pasda.psu.edu/server/rest/services/pasda/PAFishBoat/MapServer';
-  const STREAMS_URL  = `${BASE}/3`;  // Trout Stocked Sections 202603
-  const LAKES_PT_URL = `${BASE}/1`;   // Stocked Trout Waterbodies (points) 202411
-  const LAKES_PL_URL = `${BASE}/2`;   // Stocked Trout Waterbodies (polygons) 202403
-
+  // ── Load all data ─────────────────────────────────────────────────────────
   async function loadData() {
     const sub = document.getElementById('loading-sub');
 
-    // ── Streams (layer 26) ───────────────────────────────────────────────
+    // Layer 3 = Stocked Trout Waters 202603 (streams)
     try {
       sub.textContent = 'Fetching stocked streams…';
-      const geo = await fetchArcGIS(STREAMS_URL);
+      const geo = await fetchArcGIS(`${BASE}/3`);
       allStreamsData = geo.features || [];
       renderStreams();
     } catch(e) {
-      console.error('Streams error:', e);
-      showError(`⚠️ Could not load stocked streams: ${e.message}`);
+      console.error('Streams:', e);
+      showError('⚠️ Could not load stocked streams. Try refreshing.');
       document.getElementById('ct-streams').textContent = 'Error';
     }
 
-    // ── Lakes — points (layer 1) then polygons (layer 2) ────────────────
+    // Layers 1 (points) + 2 (polygons) = Stocked Trout Waterbodies
     try {
       sub.textContent = 'Fetching stocked lakes…';
       const [ptGeo, plGeo] = await Promise.all([
-        fetchArcGIS(LAKES_PT_URL).catch(() => ({ features: [] })),
-        fetchArcGIS(LAKES_PL_URL).catch(() => ({ features: [] }))
+        fetchArcGIS(`${BASE}/1`).catch(() => ({ features: [] })),
+        fetchArcGIS(`${BASE}/2`).catch(() => ({ features: [] }))
       ]);
-      // Deduplicate by name — prefer polygon; use points for anything not in polygons
       const polyNames = new Set((plGeo.features || []).map(f =>
-        (f.properties?.WATER_NAME || f.properties?.WaterName || '').toUpperCase()));
+        (f.properties?.WtrName || f.properties?.GNIS_NAME || '').toUpperCase()));
       const ptOnly = (ptGeo.features || []).filter(f =>
-        !polyNames.has((f.properties?.WATER_NAME || f.properties?.WaterName || '').toUpperCase()));
+        !polyNames.has((f.properties?.WtrName || f.properties?.GNIS_NAME || '').toUpperCase()));
       allLakesData = [...(plGeo.features || []), ...ptOnly];
       renderLakes();
     } catch(e) {
-      console.error('Lakes error:', e);
+      console.error('Lakes:', e);
       document.getElementById('ct-lakes').textContent = 'Error';
     }
 
-    // ── Keystone — use Best Fishing Waters (layer 11 streams, 12 lakes) ─
+    // Layers 11 (streams) + 12 (lakes) = Best Fishing Waters
     try {
-      sub.textContent = 'Fetching Keystone / Best Waters…';
+      sub.textContent = 'Fetching Best Fishing Waters…';
       const [ksStr, ksLk] = await Promise.all([
         fetchArcGIS(`${BASE}/11`).catch(() => ({ features: [] })),
         fetchArcGIS(`${BASE}/12`).catch(() => ({ features: [] }))
@@ -572,8 +539,19 @@ function keystonePopup(p, type) {
       ];
       renderKeystone();
     } catch(e) {
-      console.error('Keystone error:', e);
+      console.error('Best Waters:', e);
       document.getElementById('ct-keystone').textContent = 'N/A';
+    }
+
+    // Layer 36 = Trout Natural Reproduction with Tributaries 202505 (wild trout)
+    try {
+      sub.textContent = 'Fetching wild trout streams…';
+      const geo = await fetchArcGIS(`${BASE}/36`);
+      allWildData = geo.features || [];
+      renderWild();
+    } catch(e) {
+      console.error('Wild trout:', e);
+      document.getElementById('ct-wild').textContent = 'N/A';
     }
 
     document.getElementById('loading').style.display = 'none';
